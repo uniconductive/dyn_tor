@@ -36,7 +36,6 @@ pub struct TorDataDirsConfig {
     pub full_path: String,
 }
 
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TorConfig {
     pub path: String,

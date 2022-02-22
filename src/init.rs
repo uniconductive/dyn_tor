@@ -1,8 +1,8 @@
-use crate::config::{self, AppConfig};
+use crate::config::{self, AppConfig, LogLevelConfig};
 use crate::error;
 use std::path::{Path, PathBuf};
 
-fn init_log(log_file_path: String) -> Result<log4rs::Handle, Box<dyn std::error::Error>> {
+fn init_log(log_file_path: String, level: &LogLevelConfig) -> Result<log4rs::Handle, Box<dyn std::error::Error>> {
     use log::LevelFilter;
     use log4rs::{
         append::{
@@ -26,15 +26,23 @@ fn init_log(log_file_path: String) -> Result<log4rs::Handle, Box<dyn std::error:
         .append(false)
         .build(log_file_path)?;
 
+    let level_filter = match level {
+        LogLevelConfig::Error => log::LevelFilter::Error,
+        LogLevelConfig::Warn => log::LevelFilter::Warn,
+        LogLevelConfig::Info => log::LevelFilter::Info,
+        LogLevelConfig::Debug => log::LevelFilter::Debug,
+        LogLevelConfig::Trace => log::LevelFilter::Trace,
+    };
+
     let config = Config::builder()
         .appender(
             Appender::builder()
-                .filter(Box::new(ThresholdFilter::new(log::LevelFilter::Debug)))
+                .filter(Box::new(ThresholdFilter::new(level_filter)))
                 .build("log", Box::new(log_file)),
         )
         .appender(
             Appender::builder()
-                .filter(Box::new(ThresholdFilter::new(log::LevelFilter::Debug)))
+                .filter(Box::new(ThresholdFilter::new(level_filter)))
                 .build("stderr", Box::new(stderr)),
         )
         .build(
@@ -209,7 +217,7 @@ pub fn init() -> Result<AppConfig, Box<dyn std::error::Error>> {
         let mut log_file_path =
             normalize_path_in_config(&config.log.path, "log.path", true, relative_to.clone())?;
         log_file_path = log_file_path + &log_file_name;
-        let _ = init_log(log_file_path)?;
+        let _ = init_log(log_file_path, &config.log.level)?;
     }
     log::debug!("init...");
     log::debug!("relative_to: {}", relative_to.to_str().unwrap());
