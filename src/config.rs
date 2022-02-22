@@ -102,6 +102,7 @@ pub fn load_config() -> Result<(AppConfig, PathBuf), Box<dyn Error>> {
     }
 }
 
+/*
 pub fn save_config(app_config: &AppConfig) -> Result<(), Box<dyn Error>> {
     let (file_path, _) = get_config_file_path(false)?;
     let res = serde_json::to_vec_pretty(app_config)?;
@@ -128,3 +129,4 @@ pub fn save_default_config() -> Result<(), Box<dyn Error>> {
         log: Default::default(),
     })
 }
+*/

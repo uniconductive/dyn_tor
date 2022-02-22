@@ -126,7 +126,7 @@ async fn main_impl() -> Result<(), Box<dyn Error>> {
                             }
                         }
                     }
-                    std::thread::sleep(time::Duration::from_millis(50));
+                    tokio::time::sleep(time::Duration::from_millis(50)).await;
                 }
             });
 
