@@ -20,5 +20,6 @@ overflow-checks = true
 lto = true
 #opt-level = 'z'  # Optimize for size.
 codegen-units = 1
+strip = true
 
 [profile.dev]
